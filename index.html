@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>QuantifiedArtJS</title>
+  <script type="text/javascript">
+
+  var head = new Image();
+  head.src = "img/head.png";
+
+  var drops = new Image();
+  drops.src = "img/drops.png";
+
+  var greenskin = new Image();
+  greenskin.src = "img/greenskin.png";
+
+  var lipscold = new Image();
+  lipscold.src = "img/lipscold.png"
+
+  var lipswarm = new Image();
+  lipswarm.src = "img/lipswarm.png"
+
+  var canvas, context;
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+    canvas = document.getElementById('qaCanvas');
+    context = canvas.getContext('2d');
+  });
+
+  function fetchValues()
+  {
+    if (window.XMLHttpRequest)
+  	{// code for IE7+, Firefox, Chrome, Opera, Safari
+  		http=new XMLHttpRequest();
+  	}
+  	http.onreadystatechange=function()
+  	{
+  	  	if (http.readyState==4 && http.status==200)
+  	    {
+          console.log(http.responseText);
+          var valueJSON = JSON.parse(http.responseText);
+          scaleValues(valueJSON);
+  	    }
+  	}
+  	http.open("POST","http://192.168.1.121:8080",true);
+  	http.send();
+  }
+
+  function scaleValues(valueJSON)
+  {
+    console.log("redrawing");
+    var greenskinIntensity = valueJSON.co2 / 2000;
+    console.log(greenskinIntensity)
+    redrawComposition(0, greenskinIntensity, 0, 0);
+  }
+
+  function redrawComposition(dropsIntensity, greenskinIntensity, lipscoldIntensity, lipswarmIntensity)
+  {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.globalAlpha = 1;
+    context.fillStyle = "#e25a10";
+    context.fillRect(0,0,canvas.width, canvas.height);
+
+    context.globalCompositeOperation = "source-over";
+    context.drawImage(head, 0, 0, canvas.width, canvas.height);
+
+    context.globalCompositeOperation = "hard-light";
+    context.globalAlpha = dropsIntensity;
+    context.drawImage(drops, 0, 0, canvas.width, canvas.height);
+
+    context.globalCompositeOperation = "hard-light";
+    context.globalAlpha = greenskinIntensity;
+    context.drawImage(greenskin, 0, 0, canvas.width, canvas.height);
+
+    context.globalCompositeOperation = "source-over";
+    context.globalAlpha = lipscoldIntensity;
+    context.drawImage(lipscold, 0, 0, canvas.width, canvas.height);
+
+    context.globalCompositeOperation = "source-over";
+    context.globalAlpha = lipswarmIntensity;
+    context.drawImage(lipswarm, 0, 0, canvas.width, canvas.height);
+  }
+
+  </script>
+</head>
+<body>
+  <canvas id="qaCanvas" width="1920" height="1080"></canvas>
+  <script type="text/javascript">
+  </script>
+  <button onclick=redrawComposition(0.5,0.5,0.5,0) text="asdf"></button>
+  <button onclick=fetchValues() value="FETCH"></button>
+</body>
+</html>
