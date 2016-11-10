@@ -26,3 +26,9 @@ cd bcm2835-1.xx
 make
 sudo make check
 sudo make install
+
+
+Autostart:
+
+`node server.js co2 dht`
+`chromium-browser --disable-translate --kiosk --incognito index.html`

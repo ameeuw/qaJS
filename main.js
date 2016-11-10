@@ -4,37 +4,31 @@
  *
  */
 
-var values = {
-  temperature : [
+var settings = {
+  host : "http://localhost:8080",
+  updateInterval : 30
+}
+
+var parameters = {
+  temperature : {
     value : 20,
     range : 5,
     target : 22,
     pitch : 0.3
-  ],
-  humidity : [
+  },
+  humidity : {
     value : 50,
     range : 18,
     target : 48,
     pitch : 0.3
-  ],
-  co2 : [
+  },
+  co2 : {
     value : 400,
     range : 1200,
     target : 400,
     pitch : 0.003
-  ]
+  }
 }
-
-
-
-static final double Hum_Target_INIT = 48;
-static final double Hum_Range_INIT = 18;
-
-
-static final double Hum_Pitch_INIT = 0.3;
-
-
-e
 
 // Create image HTML object for head
 var head = new Image();
@@ -42,7 +36,7 @@ head.src = "img/head.png";
 
 // Create image HTML object for warm lips
 var cracks = new Image();
-lipswarm.src = "img/cracks.png"
+cracks.src = "img/cracks.png"
 
 // Create image HTML object for head
 var drops = new Image();
@@ -67,9 +61,13 @@ var canvas, context;
 document.addEventListener("DOMContentLoaded", function(event) {
   canvas = document.getElementById('qaCanvas');
   context = canvas.getContext('2d');
+  setInterval(function() {
+    fetchValues();
+  }, settings.updateInterval*1000);
+
 });
 
-// Run XMLHttpRequest to fetch new values from nodejs sensor application
+// Run XMLHttpRequest to fetch new parameters from nodejs sensor application
 function fetchValues()
 {
   if (window.XMLHttpRequest)
@@ -86,78 +84,77 @@ function fetchValues()
 
         if (valueJSON.temperature !== undefined)
         {
-          values.temperature.value = valueJSON.temperature;
+          parameters.temperature.value = valueJSON.temperature;
         }
         if (valueJSON.humidity !== undefined)
         {
-          values.humidity.value = valueJSON.humidity;
+          parameters.humidity.value = valueJSON.humidity;
         }
         if (valueJSON.co2 !== undefined)
         {
-          values.co2.value = valueJSON.co2;
+          parameters.co2.value = valueJSON.co2;
         }
 
         // Apply scaling function to values
         scaleValues(valueJSON, function() {
           // Redraw canvas
-
+          console.log("CALLBACK");
         });
       }
   }
-  http.open("POST","http://192.168.1.121:8080",true);
+  http.open("POST", settings.host, true);
   http.send();
 }
 
-function scaleValues(valueJSON, callback)
+function scaleValues(currentValues, callback)
 {
-  console.log("redrawing");
-  var greenskinIntensity = valueJSON.co2 / 2000;
-  console.log(greenskinIntensity)
-  redrawComposition(0, greenskinIntensity, 0, 0);
-  var lipscoldIntensity, lipswarmIntensity, dropsIntensity, cracksIntensity, greenskinIntensity;
+  var lipscoldIntensity=0, lipswarmIntensity=0, dropsIntensity=0, cracksIntensity=0, greenskinIntensity=0;
 
-  if (valueJSON.temperature <= values.temperature.target)
+  if (currentValues.temperature <= parameters.temperature.target)
   {
-    lipscoldIntensity = sCurve(valueJSON.temperature, false);
+    lipscoldIntensity = sCurve(currentValues.temperature, parameters.temperature, true);
   }
   else
   {
-    lipswarmIntensity = sCurve(valueJSON.temperature, false);
+    lipswarmIntensity = sCurve(currentValues.temperature, parameters.temperature, false);
   }
-  values.temperature.value = valueJSON.temperature;
+  parameters.temperature.value = currentValues.temperature;
 
-  if (valueJSON.humidity <= values.humidity.target)
+  if (currentValues.humidity <= parameters.humidity.target)
   {
-    cracksIntensity = sCurve(valueJSON.humidity, true);
+    cracksIntensity = sCurve(currentValues.humidity, parameters.humidity, true);
   }
   else
   {
-    dropsIntensity = sCurve(valueJSON.humidity, false) / 2e
+    dropsIntensity = sCurve(currentValues.humidity, parameters.humidity, false) / 2;
   }
-  values.humidity.value = valueJSON.humidity;
+  parameters.humidity.value = currentValues.humidity;
 
-  greenskinIntensity = sCurve(valueJSON.co2, false);
-  values.co2.value = valueJSON.co2;
+  greenskinIntensity = sCurve(currentValues.co2, parameters.co2, false);
+  parameters.co2.value = currentValues.co2;
 
-  console.log('co2 : ' + valueJSON.co2 + 'ppm');
-  console.log('temperature : ' + valueJSON.temperature + '°C');
-  console.log('humidity: ' + valueJSON.humidity + '%');
+  console.log('co2 : ' + currentValues.co2 + 'ppm');
+  console.log('temperature : ' + currentValues.temperature + '°C');
+  console.log('humidity: ' + currentValues.humidity + '%');
   console.log('lipscoldIntensity : ' + lipscoldIntensity);
   console.log('lipswarmIntensity : ' + lipswarmIntensity);
   console.log('cracksIntensity: ' + cracksIntensity);
   console.log('dropsIntensity: ' + dropsIntensity);
   console.log('greenskinIntensity: ' + greenskinIntensity);
+
+  redrawComposition(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity);
 }
 
-function sCurve(value, range, pitch, target, negateRange)
+function sCurve(value, params, negateRange)
 {
-  var range = (negateRange) ? -range : range;
-  var sValue = (255 / 1 + Math.exp( (-1) * pitch * (value - (target + range)) );
-  return (negateRange) ? 255 - sValue : sValue;
+  var range = (negateRange) ? -params.range : params.range;
+  var sValue = ( 255 / ( 1 + Math.exp( (-1) * params.pitch * (value - (params.target + params.range)) ) ) );
+  return (negateRange) ? (255 - sValue) : sValue;
 }
 
 function redrawComposition(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity)
 {
+
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   context.globalAlpha = 1;
@@ -169,22 +166,22 @@ function redrawComposition(lipscoldIntensity, lipswarmIntensity, cracksIntensity
   context.drawImage(head, 0, 0, canvas.width, canvas.height);
 
   context.globalCompositeOperation = "hard-light";
-  context.globalAlpha = cracksIntensity;
+  context.globalAlpha = cracksIntensity / 255;
   context.drawImage(cracks, 0, 0, canvas.width, canvas.height);
 
   context.globalCompositeOperation = "hard-light";
-  context.globalAlpha = dropsIntensity;
+  context.globalAlpha = dropsIntensity / 255;
   context.drawImage(drops, 0, 0, canvas.width, canvas.height);
 
   context.globalCompositeOperation = "hard-light";
-  context.globalAlpha = greenskinIntensity;
+  context.globalAlpha = greenskinIntensity / 255;
   context.drawImage(greenskin, 0, 0, canvas.width, canvas.height);
 
   context.globalCompositeOperation = "source-over";
-  context.globalAlpha = lipscoldIntensity;
+  context.globalAlpha = lipscoldIntensity / 255;
   context.drawImage(lipscold, 0, 0, canvas.width, canvas.height);
 
   context.globalCompositeOperation = "source-over";
-  context.globalAlpha = lipswarmIntensity;
+  context.globalAlpha = lipswarmIntensity / 255;
   context.drawImage(lipswarm, 0, 0, canvas.width, canvas.height);
 }

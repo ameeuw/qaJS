@@ -1,20 +1,64 @@
 const http = require('http');
-const serial = require('serialport');
-const dht = require('node-dht-sensor');
 
-if (process.argv[2] == "22")
+var settings = {
+  dhtType : 22,
+  dhtPin : 25,
+  serialPort : "/dev/ttyAMA0"
+}
+
+var gTemperature = 22;
+var gHumidity = 48;
+var gCo2 = 1400;
+
+
+
+if (process.argv[2] !== undefined)
 {
+  if (process.argv[2] == "co2")
+  {
+    console.log("Initializing co2 sensor")
+    initCo2();
+  }
+  else
+  {
+    if (process.argv[2] == "dht")
+    {
+      console.log("Initializing dht sensor")
+      initDht();
+    }
+    else
+    {
+      console.log("Starting withouth sensors...")
+    }
+  }
+
+  if (process.argv[3] !== undefined)
+  {
+    if (process.argv[3] == "co2")
+    {
+      console.log("Initializing co2 sensor")
+      initCo2();
+    }
+    else
+    {
+      if (process.argv[3] == "dht")
+      {
+        console.log("Initializing dht sensor")
+        initDht();
+      }
+      else
+      {
+        console.log("Starting withouth sensors...")
+      }
+    }
+
+  }
+
 }
 else
 {
+  console.log("Starting withouth sensors...")
 }
-
-var gTemperature = 24;
-var gHumidity = 45;
-var gCo2 = 400;
-
-initDht();
-initCo2();
 
 http.createServer(function (req, res) {
   var body = "";
@@ -38,8 +82,10 @@ http.createServer(function (req, res) {
 
 function initDht()
 {
+  const dht = require('node-dht-sensor');
+
   setInterval(function(){
-    dht.read(22, 25, function(err, temperature, humidity) {
+    dht.read(settings.dhtType, settings.dhtPin, function(err, temperature, humidity) {
       if (!err) {
         gTemperature = temperature.toFixed(1);
         gHumidity = humidity.toFixed(1);
@@ -52,7 +98,9 @@ function initDht()
 
 function initCo2()
 {
-  var port = new serial('/dev/ttyAMA0', {
+  const serial = require('serialport');
+  
+  var port = new serial(settings.serialPort, {
     parser: serial.parsers.readline('\n')
   });
 

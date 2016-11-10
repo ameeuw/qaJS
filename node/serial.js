@@ -1,6 +1,6 @@
 var serial = require('serialport');
 
-var port = new serial('/dev/cu.wchusbserial1420', {
+var port = new serial('/dev/ttyAMA0', {
   parser: serial.parsers.readline('\n')
 });
 
