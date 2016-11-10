@@ -57,16 +57,6 @@ lipswarm.src = "img/lipswarm.png"
 // Create global objects for canvas and context
 var canvas, context;
 
-// Start when DOM is loaded
-document.addEventListener("DOMContentLoaded", function(event) {
-  canvas = document.getElementById('qaCanvas');
-  context = canvas.getContext('2d');
-  setInterval(function() {
-    fetchValues();
-  }, settings.updateInterval*1000);
-
-});
-
 // Run XMLHttpRequest to fetch new parameters from nodejs sensor application
 function fetchValues()
 {
@@ -142,7 +132,7 @@ function scaleValues(currentValues, callback)
   console.log('dropsIntensity: ' + dropsIntensity);
   console.log('greenskinIntensity: ' + greenskinIntensity);
 
-  redrawComposition(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity);
+  redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity);
 }
 
 function sCurve(value, params, negateRange)
@@ -152,7 +142,7 @@ function sCurve(value, params, negateRange)
   return (negateRange) ? (255 - sValue) : sValue;
 }
 
-function redrawComposition(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity)
+function redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dropsIntensity, greenskinIntensity)
 {
 
   context.clearRect(0, 0, canvas.width, canvas.height);
