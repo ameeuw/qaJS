@@ -29,7 +29,7 @@ Connect the serial port of the k30 carbon dioxide sensor with the serial port of
 #### k30 CO2 sensor:
 
 pin RPi | function RPi | pin k30 | function k30
-------- | -------- | -------
+------- | ------------ | ------- | ------------
 4 | vcc | 33 | vcc
 6 | gnd | 32 | gnd
 8 | tx | 34 | rx
@@ -38,7 +38,7 @@ pin RPi | function RPi | pin k30 | function k30
 #### dht temperature & humidity sensor:
 
 pin RPi | function RPi | color dht | function dht
-------- | -------- | -------
+------- | ------------ | --------- | ------------
 2 | vcc | red | vcc
 14 | gnd | black | gnd
 25 | gpio | yellow | data
