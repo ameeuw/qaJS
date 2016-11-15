@@ -1,14 +1,18 @@
 ## [ quantifiedArt ] JS
 
+---
+
 ### Introduction
 
-This repository holds a reimplementation of the QuantifiedArt project developed at the __Bosch__ _Internet of Things Lab_ at University of St. Gallen and ETH Zürich.
+This repository holds a reimplementation of the QuantifiedArt project developed at the [__Bosch__ _Internet of Things Lab_](http://iot-lab.ch) at University of St. Gallen and ETH Zürich.
 
 We aim to provide a self installable, understandable solution that everyone with the right hardware can build for him- or herself.
 
 The used software aims to be run on Single Board Computers (SBC) such as the Raspberry Pi and is built to be as minimal in processing demands as possible. The architecture is tested on a Raspberry Pi B+ Model 1.2 and is expected to work on any revision of this SBC (RPi 2 / 3 / zero).
 
 For now the code supports DHT-type temperature and humidity sensors and works with K30 carbon dioxide sensor modules from SenseAir. We aim to provide support for other air parameter sensors in the future to keep this project being adapted by more and more people.
+
+---
 
 ### Bill Of Materials
 
@@ -42,6 +46,8 @@ pin RPi | function RPi | color dht | function dht
 2 | vcc | red | vcc
 14 | gnd | black | gnd
 25 | gpio | yellow | data
+
+---
 
 ### Installation:
 
