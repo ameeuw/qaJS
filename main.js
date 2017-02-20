@@ -17,7 +17,7 @@ var parameters = {
     pitch : 0.3
   },
   humidity : {
-    value : 50,
+    value : 40,
     range : 18,
     target : 40,
     pitch : 0.3
@@ -86,7 +86,7 @@ function fetchValues()
         }
 
         // Apply scaling function to values
-        scaleValues(valueJSON, function() {
+        scaleValues(parameters, function() {
           // Redraw canvas
           console.log("CALLBACK");
         });
@@ -105,32 +105,32 @@ function scaleValues(currentValues, callback)
 {
   var lipscoldIntensity=0, lipswarmIntensity=0, dropsIntensity=0, cracksIntensity=0, greenskinIntensity=0;
 
-  if (currentValues.temperature <= parameters.temperature.target)
+  if (currentValues.temperature.value <= parameters.temperature.target)
   {
     lipscoldIntensity = sCurve(currentValues.temperature, parameters.temperature, true);
   }
   else
   {
-    lipswarmIntensity = sCurve(currentValues.temperature, parameters.temperature, false);
+    lipswarmIntensity = sCurve(currentValues.temperature.value, parameters.temperature, false);
   }
-  parameters.temperature.value = currentValues.temperature;
+  // parameters.temperature.value = currentValues.temperature.value;
 
-  if (currentValues.humidity <= parameters.humidity.target)
+  if (currentValues.humidity.value <= parameters.humidity.target)
   {
-    cracksIntensity = sCurve(currentValues.humidity, parameters.humidity, true);
+    cracksIntensity = sCurve(currentValues.humidity.value, parameters.humidity, false) / 2;
   }
   else
   {
-    dropsIntensity = sCurve(currentValues.humidity, parameters.humidity, false) / 2;
+    dropsIntensity = sCurve(currentValues.humidity.value, parameters.humidity, false) / 2;
   }
-  parameters.humidity.value = currentValues.humidity;
+  // parameters.humidity.value = currentValues.humidity;
 
-  greenskinIntensity = sCurve(currentValues.co2, parameters.co2, false);
-  parameters.co2.value = currentValues.co2;
+  greenskinIntensity = sCurve(currentValues.co2.value, parameters.co2, false);
+  // parameters.co2.value = currentValues.co2;
 
-  console.log('co2 : ' + currentValues.co2 + 'ppm');
-  console.log('temperature : ' + currentValues.temperature + '°C');
-  console.log('humidity: ' + currentValues.humidity + '%');
+  console.log('co2 : ' + currentValues.co2.value + 'ppm');
+  console.log('temperature : ' + currentValues.temperature.value +  String.fromCharCode(176) + "C");
+  console.log('humidity: ' + currentValues.humidity.value + '%');
   console.log('lipscoldIntensity : ' + lipscoldIntensity);
   console.log('lipswarmIntensity : ' + lipswarmIntensity);
   console.log('cracksIntensity: ' + cracksIntensity);
@@ -156,6 +156,13 @@ function redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dro
   context.fillStyle = "#e25a10";
   context.fillRect(0,0,canvas.width, canvas.height);
 
+  var baseX = 30;
+  var baseY = 800;
+  var yStep = 60;
+  drawText("Temperature: " + parameters.temperature.value.toFixed(2) +  String.fromCharCode(176) + "C", baseX, baseY + yStep);
+  drawText("Humidity: " + parameters.humidity.value.toFixed(2) + " %", baseX, baseY + 2 * yStep);
+  drawText("CO2: " + parameters.co2.value.toFixed(2) + " ppm", baseX, baseY + 3 * yStep);
+
   context.globalAlpha = 1;
   context.globalCompositeOperation = "source-over";
   context.drawImage(head, 0, 0, canvas.width, canvas.height);
@@ -179,13 +186,6 @@ function redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dro
   context.globalCompositeOperation = "source-over";
   context.globalAlpha = lipswarmIntensity / 255;
   context.drawImage(lipswarm, 0, 0, canvas.width, canvas.height);
-
-  var baseX = 30;
-  var baseY = 800;
-  var yStep = 60
-  drawText("Temperature: " + parameters.temperature.value.toFixed(2) +  String.fromCharCode(176) + "C", baseX, baseY + yStep);
-  drawText("Humidity: " + parameters.humidity.value.toFixed(2) + " %", baseX, baseY + 2 * yStep);
-  drawText("CO2: " + parameters.co2.value.toFixed(2) + " ppm", baseX, baseY + 3 * yStep);
 }
 
 function drawText(text, x, y)
