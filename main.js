@@ -74,15 +74,15 @@ function fetchValues()
 
         if (valueJSON.temperature !== undefined)
         {
-          parameters.temperature.value = valueJSON.temperature;
+          parameters.temperature.value = parseFloat(valueJSON.temperature);
         }
         if (valueJSON.humidity !== undefined)
         {
-          parameters.humidity.value = valueJSON.humidity;
+          parameters.humidity.value = parseFloat(valueJSON.humidity);
         }
         if (valueJSON.co2 !== undefined)
         {
-          parameters.co2.value = valueJSON.co2;
+          parameters.co2.value = parseFloat(valueJSON.co2);
         }
 
         // Apply scaling function to values
