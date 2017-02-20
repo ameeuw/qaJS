@@ -6,7 +6,7 @@
 
 var settings = {
   host : "http://localhost:8080",
-  updateInterval : 30
+  updateInterval : 15
 }
 
 var parameters = {
@@ -19,7 +19,7 @@ var parameters = {
   humidity : {
     value : 50,
     range : 18,
-    target : 48,
+    target : 40,
     pitch : 0.3
   },
   co2 : {
@@ -95,6 +95,11 @@ function fetchValues()
   http.open("POST", settings.host, true);
   http.send();
 }
+
+/*
+ *
+ *
+ */
 
 function scaleValues(currentValues, callback)
 {
@@ -174,4 +179,22 @@ function redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dro
   context.globalCompositeOperation = "source-over";
   context.globalAlpha = lipswarmIntensity / 255;
   context.drawImage(lipswarm, 0, 0, canvas.width, canvas.height);
+
+  var baseX = 30;
+  var baseY = 800;
+  var yStep = 60
+  drawText("Temperature: " + parameters.temperature.value.toFixed(2) +  String.fromCharCode(176) + "C", baseX, baseY + yStep);
+  drawText("Humidity: " + parameters.humidity.value.toFixed(2) + " %", baseX, baseY + 2 * yStep);
+  drawText("CO2: " + parameters.co2.value.toFixed(2) + " ppm", baseX, baseY + 3 * yStep);
+}
+
+function drawText(text, x, y)
+{
+  context.globalAlpha = 1;
+  context.fillStyle = "white";
+  context.strokeStyle = "black";
+  context.lineWidth = 4;
+  context.font = "40px Arial";
+  context.strokeText(text, x, y);
+  context.fillText(text, x, y);
 }

@@ -147,3 +147,10 @@ Additional infos:
 Add line:
 
 `@/home/pi/qaJS/launch.sh`
+
+### Start
+
+If you are launching from an SSH session, make sure to set the $DISPLAY variable:
+`export DISPLAY=:0`
+
+`./launch.sh`

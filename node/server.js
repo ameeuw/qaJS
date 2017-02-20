@@ -8,9 +8,7 @@ var settings = {
 
 var gTemperature = 22;
 var gHumidity = 48;
-var gCo2 = 1400;
-
-
+var gCo2 = 400;
 
 if (process.argv[2] !== undefined)
 {
@@ -99,7 +97,7 @@ function initDht()
 function initCo2()
 {
   const serial = require('serialport');
-  
+
   var port = new serial(settings.serialPort, {
     parser: serial.parsers.readline('\n')
   });
