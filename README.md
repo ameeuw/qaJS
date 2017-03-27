@@ -140,13 +140,28 @@ Additional infos:
 `npm install node-dht-sensor`
 `npm install serialport`
 
+#### Change splashscreen:
+`/usr/share/plymouth/themes/pix/splash.png`
+
 #### Create autostart entry at login:
 
 `sudo nano ~/.config/lxsession/LXDE/autostart`
 
+With raspbian 'Pixel':
+
+`sudo nano ~/.config/lxsession/LXDE-pi/autostart`
+
 Add line:
 
 `@/home/pi/qaJS/launch.sh`
+
+To hide the cursor:
+
+`@unclutter -idle 0.1 -root`
+
+#### Make raspberry pi read-only
+
+Follow [this guide](https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=161416).
 
 ### Start
 
