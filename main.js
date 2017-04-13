@@ -159,9 +159,9 @@ function redrawCanvas(lipscoldIntensity, lipswarmIntensity, cracksIntensity, dro
   var baseX = 30;
   var baseY = 800;
   var yStep = 60;
-  drawText("Temperature: " + parameters.temperature.value.toFixed(2) +  String.fromCharCode(176) + "C", baseX, baseY + yStep);
-  drawText("Humidity: " + parameters.humidity.value.toFixed(2) + " %", baseX, baseY + 2 * yStep);
-  drawText("CO2: " + parameters.co2.value.toFixed(2) + " ppm", baseX, baseY + 3 * yStep);
+  drawText("Temperature: " + parameters.temperature.value.toFixed(1) +  String.fromCharCode(176) + "C", baseX, baseY + yStep);
+  drawText("Humidity: " + parameters.humidity.value.toFixed(1) + " %", baseX, baseY + 2 * yStep);
+  drawText("CO2: " + parameters.co2.value.toFixed(0) + " ppm", baseX, baseY + 3 * yStep);
 
   context.globalAlpha = 1;
   context.globalCompositeOperation = "source-over";

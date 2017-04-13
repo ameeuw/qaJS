@@ -85,7 +85,8 @@ function initDht()
   setInterval(function(){
     dht.read(settings.dhtType, settings.dhtPin, function(err, temperature, humidity) {
       if (!err) {
-        gTemperature = temperature.toFixed(1);
+        // Temperature of DHT is off - subtract 1 because of heat-compensation
+        gTemperature = temperature.toFixed(1) - 1;
         gHumidity = humidity.toFixed(1);
         // console.log('temp: ' + temperature.toFixed(1) + '°C');
         // console.log('humidity: ' + humidity.toFixed(1) + '%');
