@@ -117,7 +117,7 @@ function initCo2()
     if ((typeof(high_byte) == 'number') && (typeof(low_byte) == 'number')) {
       var co2_value = 256 * high_byte + low_byte;
       if (co2_value < 10000) {
-        console.log('CO2_VALUE: ' + co2_value);
+        // console.log('CO2_VALUE: ' + co2_value);
         gCo2 = co2_value;
       }
       else {
