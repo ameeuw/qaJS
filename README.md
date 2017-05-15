@@ -45,7 +45,7 @@ pin RPi | function RPi | color dht | function dht
 ------- | ------------ | --------- | ------------
 2 | vcc | red | vcc
 14 | gnd | black | gnd
-25 | gpio | yellow | data
+12 | gpio 18 | yellow | data
 
 ---
 

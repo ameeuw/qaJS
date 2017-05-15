@@ -2,8 +2,8 @@ const http = require('http');
 
 var settings = {
   dhtType : 22,
-  dhtPin : 25,
-  serialPort : '/dev/cu.usbserial-AH01LIMU'
+  dhtPin : 18, // GPIO18 -> PIN12
+  serialPort : '/dev/serial0'
 }
 
 var gTemperature = 22;
@@ -92,7 +92,7 @@ function initDht()
         // console.log('humidity: ' + humidity.toFixed(1) + '%');
       }
     });
-  }, 10000);
+  }, 10005);
 }
 
 function initCo2()
