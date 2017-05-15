@@ -3,7 +3,7 @@ const http = require('http');
 var settings = {
   dhtType : 22,
   dhtPin : 25,
-  serialPort : "/dev/ttyAMA0"
+  serialPort : '/dev/cu.usbserial-AH01LIMU'
 }
 
 var gTemperature = 22;
@@ -26,7 +26,7 @@ if (process.argv[2] !== undefined)
     }
     else
     {
-      console.log("Starting withouth sensors...")
+      console.log("Starting without sensors...")
     }
   }
 
@@ -46,7 +46,7 @@ if (process.argv[2] !== undefined)
       }
       else
       {
-        console.log("Starting withouth sensors...")
+        console.log("Starting without sensors...")
       }
     }
 
@@ -55,7 +55,7 @@ if (process.argv[2] !== undefined)
 }
 else
 {
-  console.log("Starting withouth sensors...")
+  console.log("Starting without sensors...")
 }
 
 http.createServer(function (req, res) {
@@ -100,18 +100,32 @@ function initCo2()
   const serial = require('serialport');
 
   var port = new serial(settings.serialPort, {
-    parser: serial.parsers.readline('\n')
+    parser: serial.parsers.byteLength(7)
+  });
+
+  port.on('open', function() {
+    console.log('Serial port opened.');
+    setInterval(function(){
+      port.write([0xFE, 0x44, 0x00, 0x08, 0x02, 0x9F, 0x25]);
+    }, 10000);
   });
 
   port.on('data', function(data) {
-    var returnJSON = {};
-    for (var element in data.split(", "))
-    {
-    	var key = data.split(", ")[element].split(" = ")[0];
-    	var value = data.split(", ")[element].split(" = ")[1];
-    	returnJSON[key] = value;
+    high_byte = data[3]
+    low_byte = data[4]
+
+    if ((typeof(high_byte) == 'number') && (typeof(low_byte) == 'number')) {
+      var co2_value = 256 * high_byte + low_byte;
+      if (co2_value < 10000) {
+        console.log('CO2_VALUE: ' + co2_value);
+        gCo2 = co2_value;
+      }
+      else {
+        console.log('Range error.');
+      }
     }
-    gCo2 = returnJSON.CO2;
-    // console.log('co2: ' + gCo2 + 'ppm');
+    else {
+      console.log('Type error.');
+    }
   });
 }
