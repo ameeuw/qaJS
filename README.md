@@ -57,6 +57,8 @@ Transfer the image to the MicroSD-Card and put it in the corresponding slot in t
 
 #### Manual installation:
 
+Download a Raspbian distribution of your choice. If you are working with a Raspberry Pi 3 I highly recommend PIXEL as it comes with the needed window manager and chromium browser installed: https://www.raspberrypi.org/downloads/raspbian/
+
 #### Disable console on serial port:
 
 `sudo raspi-config`
@@ -74,6 +76,12 @@ If `ttyAMA0` does not show up, re-enable serial port:
 Add, change or uncomment the line:
 `enable_uart=1`
 
+To enable full screen output add or uncomment the line:
+`disable_overscan=1`
+
+If you are working with a Raspberry Pi 3 add the following line to disable bluetooth:
+`dtoverlay=pi3-disable-bt`
+
 #### Update and upgrade system packages (could take a while...):
 
 `sudo apt-get update && sudo apt-get upgrade -y`
@@ -82,7 +90,7 @@ Add, change or uncomment the line:
 
 `sudo apt-get clean`
 
-#### Install LXDE:
+#### Install LXDE (skip this part is you downloaded PIXEL):
 
 `sudo apt-get install --no-install-recommends xserver-xorg -y`
 
@@ -92,7 +100,7 @@ Add, change or uncomment the line:
 
 `sudo apt-get install lightdm -y`
 
-#### Install chromium-browser:
+#### Install chromium-browser (skip this part is you downloaded PIXEL):
 
 `sudo apt-get install chromium-browser -y`
 
@@ -140,14 +148,14 @@ Additional infos:
 `npm install node-dht-sensor`
 `npm install serialport`
 
-#### Change splashscreen:
+#### Change splashscreen (For Raspbian PIXEL):
 `/usr/share/plymouth/themes/pix/splash.png`
 
 #### Create autostart entry at login:
 
 `sudo nano ~/.config/lxsession/LXDE/autostart`
 
-With raspbian 'Pixel':
+With Raspbian PIXEL:
 
 `sudo nano ~/.config/lxsession/LXDE-pi/autostart`
 
@@ -156,7 +164,7 @@ Add line:
 `@/home/pi/qaJS/launch.sh`
 
 To hide the cursor:
-
+`sudo apt-get install unclutter`
 `@unclutter -idle 0.1 -root`
 
 #### Make raspberry pi read-only

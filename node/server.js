@@ -106,6 +106,7 @@ function initCo2()
   port.on('open', function() {
     console.log('Serial port opened.');
     setInterval(function(){
+      // Write request sequence to sensor
       port.write([0xFE, 0x44, 0x00, 0x08, 0x02, 0x9F, 0x25]);
     }, 10000);
   });
