@@ -127,6 +127,14 @@ If you are working with a Raspberry Pi 3 add the following line to disable bluet
 
 `< yes >` ... `< yes >`
 
+### Option 1: user python server
+#### Install python dependencies:
+
+We are using the [Adafruit_DHT](https://github.com/adafruit/Adafruit_Python_DHT) Library to read out the DHT family of temperature and humidity sensors. To install the library use `pip install Adafruit_DHT` or install manually as described in the Adafruit git repository.
+
+For communication with the CO<sub>2</sub> sensor, we are using python serial. Use `pip install serial` if not installed (comes with PIXEL).
+
+### Option 2: use nodejs server
 #### Install nodejs dependences:
 
 Additional infos:
@@ -161,7 +169,13 @@ With Raspbian PIXEL:
 
 Add line:
 
-`@/home/pi/qaJS/launch.sh`
+`@/home/pi/qaJS/launch.sh pyserver`
+
+or
+
+`@/home/pi/qaJS/launch.sh nodeserver`
+
+depending on your preferences.
 
 To hide the cursor:
 `sudo apt-get install unclutter`
